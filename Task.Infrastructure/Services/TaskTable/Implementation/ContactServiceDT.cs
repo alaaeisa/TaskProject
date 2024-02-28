@@ -8,21 +8,31 @@ namespace TaskProject.Infrastructure.Services.Contact
     {
         public async Task<(List<ContactDTO> data, int recordsFiltered, int recordsTotal)> ListAllCurrenciesByPage(DataTableParamterDTO tableParamter, ContactIndexSearchDTO searchObj)
         {
-            var currencies = await appliactionDbContext.Contacts
-                .Where(y => !y.IsDeleted
-                    && (y.Name.Contains(tableParamter.Search)
-                    || y.Phone.Contains(tableParamter.Search)
-                    || y.Address.Contains(tableParamter.Search))
-                    && (searchObj.IsActive == null || y.IsActive== searchObj.IsActive))
-                .Select(c => new ContactDTO
-                { Id = c.Id, Name = c.Name, Phone = c.Phone, IsActive = c.IsActive })
-                .AsNoTracking().ToListAsync();
-            var returnedCurrencies = OrderTable(currencies.AsQueryable(), tableParamter.Order, tableParamter.OrderDir);
+            try
+            {
+                var currencies = await appliactionDbContext.Contacts
+             .Where(y => !y.IsDeleted
+                 && (y.Name.Contains(tableParamter.Search)
+                 || y.Phone.Contains(tableParamter.Search)
+                 || y.Address.Contains(tableParamter.Search))
+                 && (searchObj.IsActive == null || y.IsActive == searchObj.IsActive))
+             .Select(c => new ContactDTO
+             { Id = c.Id, Name = c.Name, Phone = c.Phone, IsActive = c.IsActive , Address = c.Address })
+             .AsNoTracking().ToListAsync();
+                var returnedCurrencies = OrderTable(currencies.AsQueryable(), tableParamter.Order, tableParamter.OrderDir);
 
 
-            int CountUnSkipped = returnedCurrencies.Count();
-            var selectedCurrencies = tableParamter.PageSize != -1 ? returnedCurrencies.Skip(tableParamter.StartRec).Take(tableParamter.PageSize) : returnedCurrencies.Skip(0);
-            return (selectedCurrencies.ToList(), CountUnSkipped, currencies.Count);
+                int CountUnSkipped = returnedCurrencies.Count();
+                var selectedCurrencies = tableParamter.PageSize != -1 ? returnedCurrencies.Skip(tableParamter.StartRec).Take(tableParamter.PageSize) : returnedCurrencies.Skip(0);
+                return (selectedCurrencies.ToList(), CountUnSkipped, currencies.Count);
+
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
+         
         }
 
         public IQueryable<ContactDTO> OrderTable(IQueryable<ContactDTO> currencies, string orderColumn, string orderDir)

@@ -21,18 +21,6 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
-app.UseEndpoints(endpoints =>
-{
-
-    endpoints.MapAreaControllerRoute(
-    name: "CPArea",
-    areaName: "cp",
-    pattern: "cp/{controller=Account}/{action=Index}/{id?}");
-
-    endpoints.MapControllerRoute(
-        name: "default",
-        pattern: "cp/{controller=Home}/{action=Index}/{id?}");
-});
 
 app.UseAuthorization();
 

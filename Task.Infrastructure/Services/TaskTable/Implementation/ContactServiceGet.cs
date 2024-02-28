@@ -13,6 +13,7 @@ namespace TaskProject.Infrastructure.Services.Contact
                 throw new NullReferenceException("Not Found");
 
             var  Obj = new  ContactVM();
+            Obj.Id = Contact.Id;
             Obj.Name = Contact.Name;
             Obj.Phone = Contact.Phone;
             Obj.Address = Contact.Address;

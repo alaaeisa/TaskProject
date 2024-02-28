@@ -103,11 +103,11 @@
         * Usage : Show Success Message
         * Note : this function called when need to show Success Message
     */
-    function showSuccessMessage(message = "Saved Successful"') {
-        showToast('"Done"', message, 'success');
+    function showSuccessMessage(message = 'Saved Successful') {
+        showToast('Done', message, 'success');
     }
-    function showUpdatedMessage(message = '"Edited Successful"') {
-        showToast('"Done"]', message, 'warning');
+    function showUpdatedMessage(message = 'Edited Successful') {
+        showToast('Done', message, 'warning');
     }
 
     /*------------------------showErrorMessage-----------------------
@@ -115,7 +115,7 @@
         * Usage : Show Error Message
         * Note : this function called when need to show Error Message
     */
-    function showErrorMessage(message = '"Something went wrong"]') {
+    function showErrorMessage(message = 'Something went wrong') {
         showToast('"Error"', message, 'danger');
     }
 
@@ -196,11 +196,11 @@
         var buttons = [{
             extend: 'collection',
             className: 'btn btn-label-primary dropdown-toggle me-2 waves-effect waves-light',
-            text: '<i class="ti ti-file-export me-sm-1"></i> <span class="d-none d-sm-inline-block">"Export"]</span>',
+            text: '<i class="ti ti-file-export me-sm-1"></i> <span class="d-none d-sm-inline-block">Export</span>',
             buttons: [
                 {
                     extend: 'print',
-                    text: '<i class="ti ti-printer me-1" ></i>"Print"]',
+                    text: '<i class="ti ti-printer me-1" ></i>Print',
                     className: 'dropdown-item',
                     exportOptions: {
                         columns: ':not(.tools-td)',
@@ -223,7 +223,7 @@
                 },
                 {
                     extend: 'excel',
-                    text: '<i class="ti ti-file-spreadsheet me-1"></i>"Excel"]',
+                    text: '<i class="ti ti-file-spreadsheet me-1"></i>Excel',
                     className: 'dropdown-item',
                     exportOptions: {
                         columns: ':not(.tools-td)'
@@ -281,7 +281,7 @@
             destroy: true,
             pageLength: 10,
             order: [[0, 'desc']],
-            lengthMenu: [[10, 20, 30, -1], [10, 20, 30, '"All"]']],
+            lengthMenu: [[10, 20, 30, -1], [10, 20, 30, 'All']],
             columns: DataTableColumns,
             ajax: {
                 "url": LoadUrl,
