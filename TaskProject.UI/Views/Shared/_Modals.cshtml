@@ -1,0 +1,35 @@
+﻿    <!-- confirm delete Modal -->
+<div class="modal fade main-modal" id="confirmDeleteModal">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-body text-center alert-msg">
+                <i class="" id="headerIcon"></i>
+                <p></p>
+            </div>
+            <div class="modal-footer justify-content-center border-0">
+                <button type="button" class="btn btn-primary rounded-pill" id="okBtn">
+                    Confirm
+                </button>
+                <button type="button" id="cancelBtn"
+                        class="btn btn-outline-danger rounded-pill"
+                        data-bs-dismiss="modal">
+               Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- End content -->
+<div class="bs-toast toast toast-ex animate__animated my-2"
+     role="alert" 
+     id="notifyModal"
+     aria-live="assertive"
+     aria-atomic="true"
+     data-bs-delay="1500">
+    <div class="toast-header">
+        <i class="ti ti-bell ti-xs me-2"></i>
+        <div class="me-auto fw-medium" id="NotifyHMsg"></div>
+        <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+    </div>
+    <div class="toast-body" id="NotifyMMsg"></div>
+</div>

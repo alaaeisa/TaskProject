@@ -1,0 +1,470 @@
+﻿<script>
+    var isArabic = 'True';
+    $(document).ready(function () {
+        if ($('.multi-select').length > 0) {
+            $('.multi-select').select2();
+        }
+        if ($('.select2').length > 0) {
+            $('.select2').select2();
+        }
+        if ($('.datePicker').length > 0) {
+            $('.datePicker').flatpickr({
+                monthSelectorType: "static"
+            });
+        }
+    });
+    /*------------------------beginLoading-----------------------
+     * Function Name: beginLoading
+     * Usage : Show the loading Overlay
+     * Note : this function called when you want to hold screen untill request done
+    */
+    function beginLoading(selector) {
+        $(selector).LoadingOverlay("show", {
+            fade: true,
+            color: "rgba(255, 255, 255, 0.5)",
+            zIndex: 99999999999999999999
+        });
+    }
+    /*------------------------/beginLoading----------------------*/
+
+    /*------------------------finishLoading-----------------------
+        * Function Name: finishLoading
+        * Usage : Hide the loading Overlay
+        * Note : this function called when request is done to remove the loading overlay
+    */
+    function finishLoading(selector) {
+        $(selector).LoadingOverlay("hide", {
+            fade: true
+        });
+    }
+    /*------------------------showAlert-----------------------
+        * Function Name: showAlert
+        * Usage : Show Confirm Box
+        * Note : this function called when need to open confirm box
+    */
+    function showAlert(type, message, okBtn, cancelBtn, okFunc, cancelFunc) {
+        if (type == "danger")
+            type = "error";
+        Swal.fire({
+            text: message,
+            showClass: {
+                popup: 'animate__animated animate__bounceIn'
+            },
+            icon: type,
+            showCancelButton: (cancelBtn != null),
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: okBtn,
+            cancelButtonText: (cancelBtn ?? ""),
+            customClass: {
+                confirmButton: (okBtn != null ? "btn btn-primary me-1" : ""),
+                cancelButton: (cancelBtn != null ? "btn btn-label-secondary" : "")
+            },
+            buttonsStyling: false
+        }).then(function (result) {
+            if (result.value) {
+                okFunc && okFunc();
+            } else if (result.dismiss === Swal.DismissReason.cancel) {
+                cancelFunc && cancelFunc();
+            }
+        });
+    }
+    function differenceInDays(date1, date2) {
+        date1 = new Date(date1);
+        date2 = new Date(date2);
+
+        // To calculate the time difference of two dates
+        var Difference_In_Time = date2.getTime() - date1.getTime();
+
+        // To calculate the no. of days between two dates
+        return Difference_In_Time / (1000 * 3600 * 24);
+    }
+    /*------------------------showToast-----------------------
+        * Function Name: showToast
+        * Usage : Show Toast Box
+        * Note : this function called when need to show Toast box
+    */
+    function showToast(header, message, type = 'success') {
+        if (type == 'success') {
+            toastr.success(message, header, { timeOut: 1500 })
+        }
+        else if (type == 'danger') {
+            toastr.error(message, header, { timeOut: 1500 })
+        }
+        else if (type == 'warning') {
+            toastr.warning(message, header, { timeOut: 1500 })
+        }
+        else {
+            toastr.info(message, header, { timeOut: 1500 })
+        }
+    }
+    /*------------------------showSuccessMessage-----------------------
+        * Function Name: showSuccessMessage
+        * Usage : Show Success Message
+        * Note : this function called when need to show Success Message
+    */
+    function showSuccessMessage(message = "Saved Successful"') {
+        showToast('"Done"', message, 'success');
+    }
+    function showUpdatedMessage(message = '"Edited Successful"') {
+        showToast('"Done"]', message, 'warning');
+    }
+
+    /*------------------------showErrorMessage-----------------------
+        * Function Name: showErrorMessage
+        * Usage : Show Error Message
+        * Note : this function called when need to show Error Message
+    */
+    function showErrorMessage(message = '"Something went wrong"]') {
+        showToast('"Error"', message, 'danger');
+    }
+
+    // Initialize single image lightbox
+    $('[data-toggle="lightbox-image"]').magnificPopup({ type: 'image', image: { titleSrc: 'title' } });
+
+    // Initialize image gallery lightbox
+    $('[data-toggle="lightbox-gallery"]').each(function () {
+        $(this).magnificPopup({
+            delegate: 'a.gallery-link',
+            type: 'image',
+            gallery: {
+                enabled: true,
+                navigateByImgClick: true,
+                arrowMarkup: '<button type="button" class="mfp-arrow mfp-arrow-%dir%" title="%title%"></button>',
+                tPrev: 'Previous',
+                tNext: 'Next',
+                tCounter: '<span class="mfp-counter">%curr% of %total%</span>'
+            },
+            image: { titleSrc: 'title' }
+        });
+    });
+    function onModelError(response) {
+        var msg = '';
+        if (response.responseJSON === undefined)
+            response.errors.forEach((error, i) => msg += error + '<br>');
+        else
+            response.responseJSON.errors.forEach((error, i) => msg += error + '<br>');
+        showErrorMessage(msg);
+    }
+    function onModalBegin() {
+        //start Loading
+        beginLoading('body')
+    }
+    function onModalComplete() {
+        //finish Loading
+        finishLoading('body')
+    }
+    function AddDaysToDate(_Date, _days) {
+        var startDate = new Date(_Date);
+        var day = 60 * 60 * 24 * 1000 * _days;
+        var endDate = new Date(startDate.getTime() + day);
+        var _Date = ConvertJsDateFormat(endDate, "/");
+        return _Date;
+    }
+    function ConvertJsDateFormat(jsdate, joinchar) {
+        return jsdate.getFullYear() + "" + joinchar + "" + padCode(jsdate.getMonth() + 1, 2) + "" + joinchar + "" + padCode(jsdate.getDate(), 2);
+    }
+    function padCode(str, len) {
+        var zeros = "0000000";
+        if (str == null) return zeros.substr(0, len);
+        if (typeof str != "string") str = str.toString();
+        var diff = len - str.length;
+        zeros = zeros.substr(0, diff);
+        if (diff != 0) {
+            str = zeros + str;
+        }
+        return str;
+    }
+    function GetDiffDateByDay(_frist, _scound) {
+        var date1 = new Date(_frist)
+        var date2 = new Date(_scound)
+        var diffDays = round((parseInt((date1 - date2) / (1000 * 60 * 60 * 24), 10)), 2);
+        return diffDays;
+    }
+    function round(number, places) {
+        if (number == undefined || number == '') {
+            return 0;
+        }
+        else {
+            return +(Math.round(number + "e+" + places) + "e-" + places);
+        }
+    }
+    // DataTable
+    var dTable;
+    var isfirstdTableDraw = true;
+    function FindDataTable(LoadUrl, tableid, IsDataSearch, _SearchObj, additionalButtons) {
+        var buttons = [{
+            extend: 'collection',
+            className: 'btn btn-label-primary dropdown-toggle me-2 waves-effect waves-light',
+            text: '<i class="ti ti-file-export me-sm-1"></i> <span class="d-none d-sm-inline-block">"Export"]</span>',
+            buttons: [
+                {
+                    extend: 'print',
+                    text: '<i class="ti ti-printer me-1" ></i>"Print"]',
+                    className: 'dropdown-item',
+                    exportOptions: {
+                        columns: ':not(.tools-td)',
+                    },
+                    customize: function (win) {
+                        //customize print view for dark
+                        $(win.document.body)
+                            .css('color', config.colors.headingColor)
+                            .css('border-color', config.colors.borderColor)
+                            .css('background-color', config.colors.bodyBg);
+                        $(win.document.body)
+                            .find('table')
+                            .addClass('compact')
+                            .css('color', 'inherit')
+                            .css('border-color', 'inherit')
+                            .css('background-color', 'inherit')
+                            .css('direction', (isArabic ? 'rtl' : 'ltr'))
+                            .css('text-align', (isArabic ? 'right' : 'left'));
+                    }
+                },
+                {
+                    extend: 'excel',
+                    text: '<i class="ti ti-file-spreadsheet me-1"></i>"Excel"]',
+                    className: 'dropdown-item',
+                    exportOptions: {
+                        columns: ':not(.tools-td)'
+                    }
+                },
+                {
+                    extend: 'pdf',
+                    text: '<i class="ti ti-file-description me-1"></i>Pdf',
+                    className: 'dropdown-item',
+                    exportOptions: {
+                        orthogonal: 'export',
+                        columns: ':not(.tools-td)',
+                        modifier: { order: 'index' }
+                    },
+                    customize: function (doc) {
+                        pdfMake.fonts = {
+                            Arial: {
+                                normal: 'arial',
+                                bold: 'arial',
+                                italics: 'arial',
+                                bolditalics: 'arial'
+                            }
+                        }
+                        doc.defaultStyle.font = 'Arial';
+                        doc.styles.tableHeader.alignment = (isArabic ? 'right' : 'left');
+                        doc.content[1].table.body.forEach(function (row) {
+                            row.forEach(function (cell) {
+                                cell.alignment = (isArabic ? 'right' : 'left');
+                                cell.direction = (isArabic ? 'rtl' : 'ltr');
+                            });
+                        });
+                        if (isArabic) {
+                            doc.content[1].table.body[0] = doc.content[1].table.body[0].reverse();
+                        }
+                    }
+                }
+            ]
+        }];
+        if (additionalButtons != null && additionalButtons.length > 0) {
+            $.each(additionalButtons, function (index, item) {
+                buttons.push({
+                    text: `<i class="ti ti-plus me-sm-1"></i><span class="d-none d-sm-inline-block">${item.Title}</span>`,
+                    className: `create-new btn btn-primary waves-effect waves-light ${item.ClassName}`
+                });
+            })
+        }
+        dTable = $("#" + tableid).DataTable({
+            bLengthChange: true,
+            bPaginate: true,
+            bInfo: true,
+            ordering: true,
+            autoWidth: false,
+            serverSide: true,
+            searching: IsDataSearch,
+            destroy: true,
+            pageLength: 10,
+            order: [[0, 'desc']],
+            lengthMenu: [[10, 20, 30, -1], [10, 20, 30, '"All"]']],
+            columns: DataTableColumns,
+            ajax: {
+                "url": LoadUrl,
+                "type": "POST",
+                "data": { SearchObj: _SearchObj }
+            },
+            language: dataTableLanguage,
+            responsive: {
+                details: {
+                    type: 'column',
+                    target: 0
+                }
+            },
+            columnDefs: [
+                {
+                    className: 'control',
+                    width: '30px',
+                    orderable: false,
+                    targets: 0,
+                    searchable: false,
+                },
+                {
+                    targets: '_all',
+                    render: function (data, type, row, meta) {
+                        if (type !== 'export' || !isArabic) {
+                            return data;
+                        }
+
+                        var api = $("#" + tableid).DataTable();
+
+                        var cols = api.columns().count();
+                        var data = api.cell(meta.row, cols - 1 - meta.col).data();
+                        return api.cell(meta.row, cols - 1 - meta.col).data();
+                    }
+                }
+            ],
+            dom: '<"card-header flex-column flex-md-row"<"head-label text-center"><"dt-action-buttons text-end pt-3 pt-md-0"B>><"row"<"col-sm-12 col-md-6"l><"col-sm-12 col-md-6 d-flex justify-content-center justify-content-md-end"f>>t<"row"<"col-sm-12 col-md-6"i><"col-sm-12 col-md-6"p>>',
+            buttons: buttons
+        });
+    }
+
+    function DarwDetailsTable(tableSelector, hasCheckbox) {
+        if (hasCheckbox) {
+            let DetTable = $(`${tableSelector}`).DataTable({
+                bLengthChange: false,
+                bInfo: false,
+                ordering: false,
+                searching: false,
+                autoWidth: true,
+                paging: false,
+                language: dataTableLanguage,
+                select: {
+                    style: 'multi',
+                    selector: '.select-checkbox',
+                    items: 'row',
+                },
+                responsive: {
+                    details: {
+                        type: 'column',
+                        target: 0
+                    }
+                },
+                columnDefs: [
+                    {
+                        targets: 0,
+                        className: 'control',
+                        width: '30px'
+                    },
+                    {
+                        targets: 1,
+                        className: 'select-checkbox'
+                    },
+                    {
+                        targets: [0, 1],
+                        orderable: false
+                    }
+                ],
+                order: [2, 'asc'],
+                "initComplete": function () {
+                    $(`${tableSelector}`).show();
+                }
+            });
+            DetTable.on("click", "th.select-checkbox", function () {
+                if ($("th.select-checkbox").hasClass("selected")) {
+                    DetTable.rows().deselect();
+                    $("th.select-checkbox").removeClass("selected");
+                } else {
+                    DetTable.rows().select();
+                    $("th.select-checkbox").addClass("selected");
+                }
+            }).on("select deselect", function () {
+                ("Some selection or deselection going on")
+                if (DetTable.rows({
+                    selected: true
+                }).count() !== DetTable.rows().count()) {
+                    $("th.select-checkbox").removeClass("selected");
+                } else {
+                    $("th.select-checkbox").addClass("selected");
+                }
+            });
+            return DetTable;
+        }
+        else {
+            let DetTable = $(`${tableSelector}`).DataTable({
+                bLengthChange: false,
+                bInfo: false,
+                ordering: false,
+                searching: false,
+                autoWidth: true,
+                paging: false,
+                serverSide: false,
+                language: dataTableLanguage,
+                responsive: {
+                    details: {
+                        type: 'column',
+                        target: 0
+                    }
+                },
+                columnDefs: [
+                    {
+                        targets: 0,
+                        className: 'control',
+                        width: '30px'
+                    }
+                ],
+                "initComplete": function () {
+                    $(`${tableSelector}`).show();
+                }
+            });
+            return DetTable;
+        }
+    }
+    var dataTableLanguage = (isArabic ? { url: '/CPAssets/datatable/ar.json' } : {
+        paginate: {
+            previous: '<i class="fa-solid fa-chevron-left"></i>',
+            next: '<i class="fa-solid fa-chevron-right"></i>'
+        }
+    });
+    //download files Direct
+    function downloadFile(url, fileName) {
+        fetch(url, { method: 'get', mode: 'no-cors', referrerPolicy: 'no-referrer' })
+            .then(res => res.blob())
+            .then(res => {
+                const aElement = document.createElement('a');
+                aElement.setAttribute('download', fileName);
+                const href = URL.createObjectURL(res);
+                aElement.href = href;
+                // aElement.setAttribute('href', href);
+                aElement.setAttribute('target', '_blank');
+                aElement.click();
+                URL.revokeObjectURL(href);
+            });
+    };
+    function IntitCountryCode(fildID, defCode, IsDisabled) {
+        if (defCode == null || defCode == "" || defCode === undefined) {
+            defCode = "sa";
+        }
+        if (IsDisabled == null || IsDisabled == "" || IsDisabled === undefined) {
+            IsDisabled = false;
+        }
+        var input = document.querySelector(fildID);
+        window.intlTelInput(input, {
+            allowDropdown: IsDisabled,
+            autoFormat: false,
+            autoPlaceholder: "aggressive",
+            placeholderNumberType: "MOBILE",
+            initialCountry: defCode,
+            utilsScript: "/build/js/utils.js",
+        });
+    }
+    function SetCountryCode(fildID, defCode) {
+        var input = document.querySelector(fildID);
+        var iti = window.intlTelInputGlobals.getInstance(input);
+        iti.setCountry(defCode);
+    }
+    function GetCountryCode(fildID) {
+        var input = document.querySelector(fildID);
+        var iti = window.intlTelInputGlobals.getInstance(input);
+        var CountryCode = iti.getSelectedCountryData().dialCode;
+        return CountryCode;
+    }
+    function isValidMobile(element) {
+        var iti = window.intlTelInputGlobals.getInstance(element);
+        return iti.isValidNumber();
+    }
+</script>

@@ -1,0 +1,36 @@
+﻿.iti {
+    direction: rtl !important;
+}
+
+.iti--allow-dropdown .iti__flag-container,
+.iti--separate-dial-code .iti__flag-container {
+    right: 0;
+    left: auto;
+}
+
+.iti--allow-dropdown input,
+.iti--allow-dropdown input[type=text],
+.iti--allow-dropdown input[type=tel],
+.iti--separate-dial-code input,
+.iti--separate-dial-code input[type=text],
+.iti--separate-dial-code input[type=tel] {
+    padding-left: 6px !important;
+    padding-right: 52px !important;
+    margin-right: 0;
+    margin-left: auto;
+    text-align: right;
+}
+
+.iti__arrow {
+    margin-left: auto;
+    margin-right: 6px;
+}
+
+.iti__selected-flag {
+    padding: 0 0.75rem 0 0.5rem;
+}
+
+.iti__country {
+    text-align: right;
+    direction: ltr;
+}

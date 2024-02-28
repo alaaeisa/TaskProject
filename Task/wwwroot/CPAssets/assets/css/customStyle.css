@@ -1,0 +1,13 @@
+﻿.iti__country-list {
+    z-index: 1000;
+}
+.toast-index {
+    z-index: 10000;
+}
+.form-label {
+    display: block;
+}
+
+.iti {
+    width: 100%;
+}
